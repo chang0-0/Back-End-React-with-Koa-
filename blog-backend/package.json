@@ -1,26 +1,28 @@
 {
   "name": "blog-backend",
   "version": "1.0.0",
+  "private": true,
   "description": "",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node src",
-    "start:dev": "nodemon --watch src/ src/index.js "
-  },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
+    "bcrypt": "^5.0.1",
     "dotenv": "^10.0.0",
-    "koa": "^2.13.3",
+    "esm": "^3.2.25",
+    "koa": "^2.13.4",
     "koa-bodyparser": "^4.3.0",
     "koa-router": "^10.1.1",
-    "mongoose": "^6.0.11"
+    "mongoose": "^6.0.12",
+    "nodemon": "^2.0.14"
+  },
+  "scripts": {
+    "start": "node src",
+    "dev": "nodemon --watch src/ src/index.js"
   },
   "devDependencies": {
-    "eslint": "^8.0.1",
-    "eslint-config-prettier": "^8.3.0",
-    "nodemon": "^2.0.13"
+    "eslint": "^8.1.0",
+    "eslint-config-prettier": "^8.3.0"
   }
 }
