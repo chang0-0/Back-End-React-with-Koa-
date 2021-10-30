@@ -10,12 +10,14 @@ const { ObjectId } = mongoose.Types;
 export const checkObjectId = (ctx, next) => {
   const { id } = ctx.params;
   if (!ObjectId.isValid(id)) {
-    ctx.status = 400; // Bad Request
+    ctx.status = 400;
     return;
   }
+
   return next();
 };
 
+//ctx는 Context의 줄임말로 웹 요청과 응답에 관한 정보를 지니고 있다.
 export const write = async (ctx) => {
   const schema = Joi.object().keys({
     title: Joi.string().required(), //require() 가 있으면 필수 항목
@@ -46,9 +48,35 @@ export const write = async (ctx) => {
 };
 
 export const list = async (ctx) => {
+  // query는 문자열이기 때문에 숫자로 변환해 주어야 합니다.
+  // 값이 주어지지 않았다면 1을 기본으로 사용합니다.
+  // page default 값 설정 page 값은 query에서 받아 오도록 설정합니다.
+  // If have not page value The page value is consider 1
+
+  const page = parseInt(ctx.query.page || '1', 10);
+
+  if (page < 1) {
+    ctx.status = 400;
+    return;
+  }
+
   try {
-    const posts = await Post.find().exec();
-    ctx.body = posts;
+    const posts = await Post.find()
+      .sort({ _id: -1 })
+      .limit(10)
+      .skip((page - 1) * 10)
+      .lean()
+      .exec();
+
+    const postCount = await Post.countDocuments().exec();
+
+    // Math.ceil() 소수점 이하를 반올림한다.
+    ctx.set('Last-Page', Math.ceil(postCount / 10));
+    ctx.body = posts.map((post) => ({
+      ...post,
+      body:
+        post.body.length < 200 ? post.body : `${post.body.slice(0, 200)}...`,
+    }));
   } catch (e) {
     ctx.throw(500, e);
   }
