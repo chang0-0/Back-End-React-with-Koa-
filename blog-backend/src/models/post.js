@@ -12,16 +12,5 @@ const PostSchema = new Schema({
   },
 });
 
-const ImageSchema = new Schema({
-  name: String,
-  desc: String,
-  img: {
-    data: Buffer,
-    contentType: String,
-  },
-});
-
 const Post = mongoose.model('Post', PostSchema);
-const Image = mongoose.model('Image', ImageSchema);
-
-export default { Image, Post };
+export default Post;
